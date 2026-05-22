@@ -240,6 +240,7 @@ try:
         domain = parsed_url.domain
         domain_suffix = parsed_url.suffix
         netloc = parsed_url.fqdn if parsed_url.fqdn else hostname
+        apex_domain = f"{domain}.{domain_suffix}"
     else:
         netloc = hostname
         domain = ""
@@ -273,14 +274,14 @@ try:
 
         headers(target, out_settings, data)
         cert(hostname, sslp, out_settings, data)
-        dnsrec(hostname, dserv, out_settings, data)
+        dnsrec(apex_domain, dserv, out_settings, data)
         if not type_ip and not private_ip:
             from modules.subdom import subdomains
             from modules.wayback import timetravel
             from modules.whois import whois_lookup
 
             whois_lookup(domain, domain_suffix, path_to_script, out_settings, data)
-            subdomains(hostname, tout, out_settings, data, conf_path)
+            subdomains(apex_domain, tout, out_settings, data, conf_path)
             timetravel(target, data, out_settings)
         scan(ip, out_settings, data, pscan_threads)
         crawler(target, protocol, netloc, out_settings, data)
